@@ -65,5 +65,22 @@ class SudokuTableTest {
 
     @Test
     void getPossibleValuesInSubgrid() {
+        int[][] data = {
+                {9, 3, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 1, 9, 5, 0, 0, 0},
+                {0, 0, 8, 0, 0, 0, 0, 6, 0},
+                {8, 0, 0, 0, 6, 0, 0, 0, 0},
+                {4, 0, 0, 8, 0, 0, 0, 0, 1},
+                {0, 0, 0, 0, 2, 0, 0, 0, 0},
+                {0, 6, 0, 0, 0, 0, 2, 8, 0},
+                {0, 0, 0, 4, 1, 9, 0, 0, 5},
+                {0, 0, 0, 0, 0, 0, 0, 7, 0}
+        };
+
+        SudokuTable sudokuTable = new SudokuTable(data);
+        Set<Integer> possibleValuesInSubgrid2 = sudokuTable.getPossibleValuesInSubgrid(2);
+        List<Integer> integerList0 = new ArrayList<>(possibleValuesInSubgrid2);
+        List<Integer> list0 = Arrays.asList(1,2,3,4,5,7,8,9);
+        assertEquals(integerList0, list0);
     }
 }
