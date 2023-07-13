@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,6 +9,7 @@ public class SudokuTable {
     private int [][] data;
 
     private static Set<Integer> ALL_POSSIBLE_VALUES = Set.of(1, 2, 3, 4, 5, 6, 7, 8, 9);
+    private static int EMPTY_VALUE = 0;
 
     public SudokuTable(){
         this(new int[SUDOKU_SIZE][SUDOKU_SIZE]);
@@ -72,4 +74,34 @@ public class SudokuTable {
     private int convertRowAndColumnToSubgridIndex(int row, int column){
         return (row / 3) * 3 +column / 3;
     }
+
+    public void generate(){
+        while (!allCellsAreFilled()){
+            //backtrack algoritmus
+            // tudni kell mi az az állapot, ahova vissza akarunk lépni (labirintus előző elágazása)
+        }
+    }
+
+    public boolean allCellsAreFilled(){
+        for (int row = 0; row < SUDOKU_SIZE; row++) {
+            for (int column = 0; column < SUDOKU_SIZE; column++) {
+                if(data[row][column] == EMPTY_VALUE){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        System.out.println("table:");
+        StringBuilder s = new StringBuilder();
+        for (int i = 0; i < SUDOKU_SIZE; i++) {
+            s.append(Arrays.toString(data[i])).append("\n");
+        }
+        return s.toString();
+    }
+
+
 }
