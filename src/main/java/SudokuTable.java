@@ -79,6 +79,7 @@ public class SudokuTable {
         while (!allCellsAreFilled()){
             //backtrack algoritmus
             // tudni kell mi az az állapot, ahova vissza akarunk lépni (labirintus előző elágazása)
+            Step step = new Step(null, getPossibleValues(0,0));
         }
     }
 
