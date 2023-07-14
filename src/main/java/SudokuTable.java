@@ -1,5 +1,6 @@
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 public class SudokuTable {
@@ -104,6 +105,49 @@ public class SudokuTable {
            }
             //System.out.println(this); //utolsó előtti lépést mutatja*
         }
+    }
+
+    public void createPuzzle(int numbersInPuzzle){
+        generate();
+        Random random = new Random();
+        int row = random.nextInt(8);
+        int column = random.nextInt(8);
+        data[row][column] = EMPTY_VALUE;
+
+        int removedCount = 1;
+        while (true){
+            if (hasCellWithExactlyPossibleValue()){
+                if (removedCount == (SUDOKU_SIZE * SUDOKU_SIZE) - numbersInPuzzle ) {
+                    break;
+                }
+                //TODO remove another
+            } else {
+                //TODO step back
+            }
+
+        }
+    }
+
+    private Position getRandomFilledPosition(){
+        Random random = new Random();
+        while (true){
+            int row = random.nextInt(8);
+            int column = random.nextInt(8);
+            if(data[row][column] != EMPTY_VALUE){
+                return new Position(row, column);
+            }
+        }
+    }
+
+    private boolean hasCellWithExactlyPossibleValue(){
+        for (int row = 0; row < SUDOKU_SIZE; row++) {
+            for (int column = 0; column < SUDOKU_SIZE; column++) {
+                if(data[row][column] == EMPTY_VALUE && getPossibleValues(row, column).size() == 1){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public boolean allCellsAreFilled(){
