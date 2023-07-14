@@ -76,10 +76,33 @@ public class SudokuTable {
     }
 
     public void generate(){
-        while (!allCellsAreFilled()){
+        int row = 0;
+        int column = 0;
+        Step step = new Step(null, row, column, getPossibleValues(row, column));
+        while (true){
             //backtrack algoritmus
             // tudni kell mi az az állapot, ahova vissza akarunk lépni (labirintus előző elágazása)
-            Step step = new Step(null, getPossibleValues(0,0));
+           if(!step.getPossibleValues().isEmpty()){ // ha van még miből választani, akkor válasszunk egyet
+               Integer value = step.getPossibleValues().get(0);
+               step.getPossibleValues().remove(0); // ha kivettük, ki is kell törölni, már nem használható fel
+               //Integer value = step.getPossibleValues().remove(0); // előző 2 lépés összevonva
+               data[row][column] = value;
+               //utána léptetni kell(peremfeltételekkel):
+               if(allCellsAreFilled()){//ha lehet
+                   break;
+               }
+               row = column == 8 ? row + 1 : row; //*itt a row + 1-nél túlindexelődik
+               column = column == 8 ? 0 : column + 1;
+               //az egészet bele kell rakni egy új Step-be:
+               step = new Step(step, row, column, getPossibleValues(row, column)); // következő cella
+               // tehát eddig a step-eket felfűztük egy láncolt listára
+           } else { // eljutottunk egy 0-ához, vissza kell lépni:
+               data[row][column] = EMPTY_VALUE;
+               step = step.getPrevious(); // igazi labirintusban való keresésben ezt a sort is ellenőrizni kell egy if-el, ha nincs hova visszalépni, akkor a kiindulási pontban
+               row = step.getRow();         // vagyunk, és nincs megoldása a labirintusnak
+               column = step.getColumn();
+           }
+            System.out.println(this); //utolsó előtti lépést mutatja*
         }
     }
 
