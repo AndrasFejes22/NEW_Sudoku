@@ -102,7 +102,7 @@ public class SudokuTable {
                row = step.getRow();         // vagyunk, és nincs megoldása a labirintusnak
                column = step.getColumn();
            }
-            System.out.println(this); //utolsó előtti lépést mutatja*
+            //System.out.println(this); //utolsó előtti lépést mutatja*
         }
     }
 
