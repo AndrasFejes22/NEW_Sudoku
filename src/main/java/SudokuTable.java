@@ -6,11 +6,10 @@ import java.util.Set;
 public class SudokuTable {
 
     public static int SUDOKU_SIZE = 9;
-
     private int [][] data;
-
     private static Set<Integer> ALL_POSSIBLE_VALUES = Set.of(1, 2, 3, 4, 5, 6, 7, 8, 9);
     private static int EMPTY_VALUE = 0;
+    private final Random random = new Random();
 
     public SudokuTable(){
         this(new int[SUDOKU_SIZE][SUDOKU_SIZE]);
@@ -79,13 +78,13 @@ public class SudokuTable {
     public void generate(){
         int row = 0;
         int column = 0;
-        Step step = new Step(null, row, column, getPossibleValues(row, column));
+        GenerateStep generateStep = new GenerateStep(null, row, column, getPossibleValues(row, column));
         while (true){
             //backtrack algoritmus
             // tudni kell mi az az állapot, ahova vissza akarunk lépni (labirintus előző elágazása)
-           if(!step.getPossibleValues().isEmpty()){ // ha van még miből választani, akkor válasszunk egyet
-               Integer value = step.getPossibleValues().get(0);
-               step.getPossibleValues().remove(0); // ha kivettük, ki is kell törölni, már nem használható fel
+           if(!generateStep.getPossibleValues().isEmpty()){ // ha van még miből választani, akkor válasszunk egyet
+               Integer value = generateStep.getPossibleValues().get(0);
+               generateStep.getPossibleValues().remove(0); // ha kivettük, ki is kell törölni, már nem használható fel
                //Integer value = step.getPossibleValues().remove(0); // előző 2 lépés összevonva
                data[row][column] = value;
                //utána léptetni kell(peremfeltételekkel):
@@ -95,13 +94,13 @@ public class SudokuTable {
                row = column == 8 ? row + 1 : row; //*itt a row + 1-nél túlindexelődik
                column = column == 8 ? 0 : column + 1;
                //az egészet bele kell rakni egy új Step-be:
-               step = new Step(step, row, column, getPossibleValues(row, column)); // következő cella
+               generateStep = new GenerateStep(generateStep, row, column, getPossibleValues(row, column)); // következő cella
                // tehát eddig a step-eket felfűztük egy láncolt listára
            } else { // eljutottunk egy 0-ához, vissza kell lépni:
                data[row][column] = EMPTY_VALUE;
-               step = step.getPrevious(); // igazi labirintusban való keresésben ezt a sort is ellenőrizni kell egy if-el, ha nincs hova visszalépni, akkor a kiindulási pontban
-               row = step.getRow();         // vagyunk, és nincs megoldása a labirintusnak
-               column = step.getColumn();
+               generateStep = generateStep.getPrevious(); // igazi labirintusban való keresésben ezt a sort is ellenőrizni kell egy if-el, ha nincs hova visszalépni, akkor a kiindulási pontban
+               row = generateStep.getRow();         // vagyunk, és nincs megoldása a labirintusnak
+               column = generateStep.getColumn();
            }
             //System.out.println(this); //utolsó előtti lépést mutatja*
         }
@@ -109,10 +108,8 @@ public class SudokuTable {
 
     public void createPuzzle(int numbersInPuzzle){
         generate();
-        Random random = new Random();
-        int row = random.nextInt(8);
-        int column = random.nextInt(8);
-        data[row][column] = EMPTY_VALUE;
+        Position position = getRandomFilledPosition();
+        clear(position);
 
         int removedCount = 1;
         while (true){
@@ -120,7 +117,8 @@ public class SudokuTable {
                 if (removedCount == (SUDOKU_SIZE * SUDOKU_SIZE) - numbersInPuzzle ) {
                     break;
                 }
-                //TODO remove another
+                position = getRandomFilledPosition();
+                clear(position);
             } else {
                 //TODO step back
             }
@@ -129,7 +127,6 @@ public class SudokuTable {
     }
 
     private Position getRandomFilledPosition(){
-        Random random = new Random();
         while (true){
             int row = random.nextInt(8);
             int column = random.nextInt(8);
@@ -137,6 +134,10 @@ public class SudokuTable {
                 return new Position(row, column);
             }
         }
+    }
+
+    private void clear(Position position){
+        data[position.row()][position.column()] = EMPTY_VALUE;
     }
 
     private boolean hasCellWithExactlyPossibleValue(){

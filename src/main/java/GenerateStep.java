@@ -3,17 +3,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class Step {
+public class GenerateStep {
 
     //láncolt lista
-    private Step previous;
+    private GenerateStep previous;
     private List<Integer> possibleValues;
 
     //minden egyes lépésnél tároljuk el a sort és az oszlopot:
     public int row;
     public int column;
 
-    public Step(Step previous, int row, int column, Set<Integer> possibleValues) {
+    public GenerateStep(GenerateStep previous, int row, int column, Set<Integer> possibleValues) {
         this.previous = previous;
         this.row = row;
         this.column = column;
@@ -21,7 +21,7 @@ public class Step {
         Collections.shuffle(this.possibleValues);
     }
 
-    public Step getPrevious() {
+    public GenerateStep getPrevious() {
         return previous;
     }
 
