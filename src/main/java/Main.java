@@ -9,9 +9,11 @@ public class Main {
     public static void main(String[] args) {
         SudokuTable sudokuTable = new SudokuTable();
 
-        sudokuTable.generate();
-
+        //sudokuTable.generate();
+        sudokuTable.createPuzzle(80); //numberInPuzzle marad
         System.out.println(sudokuTable);
+
+        sudokuTable.exactlyOneSolutions();
 
 
        //SudokuPanel sudokuPanel = new SudokuPanel(sudokuTable);

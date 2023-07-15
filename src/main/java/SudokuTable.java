@@ -1,9 +1,13 @@
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class SudokuTable {
+
+    /**
+     * TODO konstansokat kiemelni (3, 8,stb)
+     * data[row][column] != EMPTY_VALUE -->isEmpty method
+     * console UI
+     *
+     * */
 
     public static int SUDOKU_SIZE = 9;
     private int [][] data;
@@ -108,7 +112,9 @@ public class SudokuTable {
 
     public void createPuzzle(int numbersInPuzzle){
         generate();
-        Position position = getRandomFilledPosition();
+        List<Position> allFilledPositions = getAllFilledPositions();
+        Position position = allFilledPositions.get(random.nextInt(allFilledPositions.size()));
+        RemoveStep removeStep = new RemoveStep(null, position, getValue(position));
         clear(position);
 
         int removedCount = 1;
@@ -117,28 +123,64 @@ public class SudokuTable {
                 if (removedCount == (SUDOKU_SIZE * SUDOKU_SIZE) - numbersInPuzzle ) {
                     break;
                 }
-                position = getRandomFilledPosition();
+                allFilledPositions = getAllFilledPositions();
+                allFilledPositions.removeAll(removeStep.previouslyRemovedPositions());
+                if(allFilledPositions.isEmpty()){
+                    throw new IllegalStateException("Not possible to create puzzle!");
+                }
+                position = allFilledPositions.get(random.nextInt(allFilledPositions.size()));
+                removeStep = new RemoveStep(removeStep, position, getValue(position));
                 clear(position);
+                removedCount++;
             } else {
-                //TODO step back
+               RemoveStep previous = removeStep.previous();
+               setValue(removeStep.position(), removeStep.value());
+               removedCount--;
+               previous.previouslyRemovedPositions().add(removeStep.position());
+               removeStep = previous;
             }
 
         }
     }
 
-    private Position getRandomFilledPosition(){
-        while (true){
-            int row = random.nextInt(8);
-            int column = random.nextInt(8);
-            if(data[row][column] != EMPTY_VALUE){
-                return new Position(row, column);
+    private List<Position> getAllFilledPositions(){
+        List<Position> results = new ArrayList<>();
+        for (int row = 0; row < SUDOKU_SIZE; row++) {
+            for (int column = 0; column < SUDOKU_SIZE; column++) {
+                if(data[row][column] != EMPTY_VALUE){
+                   results.add(new Position(row, column));
+                }
+            }
+        }
+        return results;
+    }
+
+    public void exactlyOneSolutions(){
+
+        for (int row = 0; row < SUDOKU_SIZE; row++) {
+            for (int column = 0; column < SUDOKU_SIZE; column++) {
+                Position position = new Position(row,column);
+                if(this.getPossibleValues(row, column).size() == 1 && getValue(position) == 0){
+                    System.out.printf("[%d][%d]%n", row, column);
+                }
             }
         }
     }
 
     private void clear(Position position){
-        data[position.row()][position.column()] = EMPTY_VALUE;
+        setValue(position, EMPTY_VALUE);
     }
+
+    private int getValue(Position position){
+        // itt lehet validálni (tartomány)
+        return data[position.row()][position.column()];
+    }
+
+    private void setValue(Position position, int value){
+        // itt lehet validálni (pl a value 1 és 9 közé esik)
+        data[position.row()][position.column()] = value;
+    }
+
 
     private boolean hasCellWithExactlyPossibleValue(){
         for (int row = 0; row < SUDOKU_SIZE; row++) {
