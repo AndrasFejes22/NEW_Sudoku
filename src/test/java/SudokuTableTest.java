@@ -1,5 +1,5 @@
-import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.Test;
+import table.SudokuTable;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,3 +1,8 @@
+package step;
+
+import position.Position;
+
+import static position.Position.position;
 import java.util.ArrayList;
 import java.util.List;
 
