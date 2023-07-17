@@ -14,7 +14,8 @@ public class SudokuTable {
      * TODO konstansokat kiemelni (3, 8,stb)
      * data[row][column] != EMPTY_VALUE -->isEmpty method
      * console UI
-     *
+     * int [][] data-val kapcsolatos feladatok külön osztályban (Grid? Table?) elválasztva a business logic-tól
+     * kevesebbszer állítunk be értéket, mint ahányszor lekérünk
      * */
 
     public static int SUDOKU_SIZE = 9;
@@ -37,7 +38,7 @@ public class SudokuTable {
     }
 
     public void solve() {
-        solve(1, false);
+        solve(1, false); //1 megoldást keressen, ne csinálja vissza
     }
 
 
@@ -56,7 +57,7 @@ public class SudokuTable {
         //Set-ekből metszetek készítése a lehetséges (beírható) értékekhez
         Set<Integer> possibleValues = getPossibleValuesInRow(row);
         possibleValues.retainAll(getPossibleValuesInColumn(column));
-        possibleValues.retainAll(getPossibleValuesInSubgrid(convertRowAndColumnToSubgridIndex(row, column)));
+        possibleValues.retainAll(getPossibleValuesInSubgrid(convertRowAndColumnToZone(row, column)));
         return possibleValues;//nincs kész
     }
 
@@ -96,14 +97,14 @@ public class SudokuTable {
         return result;
     }
 
-    private int convertRowAndColumnToSubgridIndex(int row, int column){
-        return (row / 3) * 3 +column / 3;
+    private int convertRowAndColumnToZone(int row, int column) {
+        return (row / ZONE_SIZE) * ZONE_SIZE + (column / ZONE_SIZE);
     }
 
     public void createPuzzle(int numberInPuzzle) {
         clear();
         init();
-        solve(1, false);
+        solve(1, false);//1 megoldást keressen, ne csinálja vissza
         List<Position> allFilledPositions = getAllFilledPositions();
         Position position = allFilledPositions.get(random.nextInt(allFilledPositions.size()));
         RemoveStep step = new RemoveStep(null, position, getValue(position));
@@ -167,7 +168,8 @@ public class SudokuTable {
         return position(row, column);
     }
 
-    private int solve(int maxCount, boolean undoChanges) {
+    // maxCount : megoldások száma
+    private int solve(int maxCount, boolean undoChanges) { // visszatérési érték: int; csak a megoldások számát adja meg
         Position position = findNextEmptyPosition(position(0, -1))
                 .orElseThrow(() -> new IllegalStateException("The table is already full"));
         GenerateStep step = new GenerateStep(null, position, getPossibleValues(position));
@@ -194,7 +196,7 @@ public class SudokuTable {
             }
         }
 
-        if (undoChanges) {
+        if (undoChanges) { // a data[][] tömböt kinullázza
             while (step != null) {
                 clear(step.position());
                 step = step.previous();
@@ -236,6 +238,9 @@ public class SudokuTable {
             }
         }
     }
+
+    /*a clear, getValue, setValue metódusoknak van Position-os, és (row, column)-os megoldása is, hogy
+    * ahol nem kell, ott feleslegesen ne hozzunk létre Position objektumot*/
 
     private void clear(Position position) {
         clear(position.row(), position.column());
