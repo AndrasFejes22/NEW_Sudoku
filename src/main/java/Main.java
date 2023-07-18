@@ -1,6 +1,7 @@
 import command.Command;
 import command.ExitCommand;
 import command.NewCommand;
+import command.PutCommand;
 import table.SudokuTable;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class Main {
         //SudokuPanel sudokuPanel = new SudokuPanel(sudokuTable);
         */
 
-        List<Command> commands = List.of(new NewCommand(sudokuTable), new ExitCommand(sudokuTable));
+        List<Command> commands = List.of(new NewCommand(sudokuTable), new ExitCommand(sudokuTable), new PutCommand(sudokuTable));
 
         try (Scanner input = new Scanner(System.in)){
             do {

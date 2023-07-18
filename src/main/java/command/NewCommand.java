@@ -14,5 +14,6 @@ public class NewCommand extends AbstractCommand{
     public void execute(String[] commandWithParams) {
         table.createPuzzle(25);
         System.out.println("New Sudoku board created!");
+        System.out.println(table);
     }
 }
