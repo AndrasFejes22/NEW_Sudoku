@@ -1,3 +1,3 @@
 # NEW_Sudoku
 
-Generating sudoku table. In progress.
+Generating and solving sudoku table. In progress.
