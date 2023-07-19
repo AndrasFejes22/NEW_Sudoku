@@ -17,6 +17,7 @@ public class SudokuTable {
      * int [][] data-val kapcsolatos feladatok külön osztályban (Grid? Table?) elválasztva a business logic-tól
      * kevesebbszer állítunk be értéket, mint ahányszor lekérünk
      * Putcommand : colorized!
+     * commands: clear() (undo), hint(), 
      * */
 
     public static int SUDOKU_SIZE = 9;

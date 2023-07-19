@@ -34,9 +34,18 @@ public class PutCommand extends AbstractCommand{
         int column = Integer.parseInt(commandWithParams[2]);
         int value = Integer.parseInt(commandWithParams[3]);
         if (table.setValue(row - 1, column - 1, value)) { // a -1ek a regex [1-9] miatt vannak /user input 1...9/
+            // a setValue kommunikálhatna hogy mi a baj
             System.out.println(table);
         } else {
             System.out.printf("Not possible to set [%d,%d] to %d%n", row, column, value);
         }
     }
+
+    public static int greenColored(int value){
+        String str = String.valueOf(value);
+        str =  "\u001b[1;32m" + str + "\u001b[0m";
+        return Integer.parseInt(str);
+    }
+
+    private void validate(){} //**kéne valami ilyesmi KÜLÖN
 }
